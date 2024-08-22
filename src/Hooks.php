@@ -31,21 +31,90 @@ class Hooks implements
 	 * @param Parser $parser
 	 */
 	public function onParserFirstCallInit( $parser ) {
-		$parser->setHook( 'mobileonly', static function ( $input, array $args, Parser $parser, PPFrame $frame ) {
+		$parser->setHook( 'mobileonly', [ self::class, 'renderMobileOnlyTag' ] );
+		$parser->setHook( 'nomobile', [ self::class, 'renderNoMobileTag' ] );
+		$parser->setFunctionHook( 'mobileonly', [ self::class, 'renderMobileOnly' ] );
+		$parser->setFunctionHook( 'nomobile', [ self::class, 'renderNoMobile' ] );
+	}
+
+	/**
+	 * @param string $input
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param PPFrame $frame
+	 * @return string
+	 */
+	public static function renderMobileOnlyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
+		$inline = isset( $args['inline'] ) ? $args['inline'] : false;
+		if ( !is_bool( $args['inline'] ) ) {
+			if ( $args['inline'] === '' ) {
+				$inline = true;
+			} else {
+				$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+			}
+		}
+		if ( $inline ) {
 			return '<span class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</span>';
-		} );
+		} else {
+			return '<div class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</div>';
+		}
+	}
 
-		$parser->setHook( 'nomobile', static function ( $input, array $args, Parser $parser, PPFrame $frame ) {
+	/**
+	 * @param string $input
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param PPFrame $frame
+	 * @return string
+	 */
+	public static function renderNoMobileTag( $input, array $args, Parser $parser, PPFrame $frame ) {
+		$inline = isset( $args['inline'] ) ? $args['inline'] : false;
+		if ( !is_bool( $inline ) ) {
+			if ( $args['inline'] === '' ) {
+				$inline = true;
+			} else {
+				$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+			}
+		}
+		if ( $inline ) {
 			return '<span class="nomobile">' . $parser->recursiveTagParse( $input ) . '</span>';
-		} );
+		} else {
+			return '<div class="nomobile">' . $parser->recursiveTagParse( $input ) . '</div>';
+		}
+	}
 
-		$parser->setFunctionHook( 'mobileonly', static function ( Parser $parser, $input = '' ) {
+	/**
+	 * @param Parser $parser
+	 * @param string $input
+	 * @param bool|string $inline
+	 * @return string
+	 */
+	public static function renderMobileOnly( Parser $parser, $input = '', $inline = false ) {
+		if ( !is_bool( $inline ) ) {
+			$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+		}
+		if ( $inline ) {
 			return '<span class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</span>';
-		} );
+		} else {
+			return '<div class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</div>';
+		}
+	}
 
-		$parser->setFunctionHook( 'nomobile', static function ( Parser $parser, $input = '' ) {
+	/**
+	 * @param Parser $parser
+	 * @param string $input
+	 * @param bool|string $inline
+	 * @return string
+	 */
+	public static function renderNoMobile( Parser $parser, $input = '', $inline = false ) {
+		if ( !is_bool( $inline ) ) {
+			$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+		}
+		if ( $inline ) {
 			return '<span class="nomobile">' . $parser->recursiveTagParse( $input ) . '</span>';
-		} );
+		} else {
+			return '<div class="nomobile">' . $parser->recursiveTagParse( $input ) . '</div>';
+		}
 	}
 
 	/**
