@@ -46,8 +46,8 @@ class Hooks implements
 	 */
 	public static function renderMobileOnlyTag( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$inline = isset( $args['inline'] ) ? $args['inline'] : false;
-		if ( !is_bool( $args['inline'] ) ) {
-			if ( $args['inline'] === '' ) {
+		if ( !is_bool( $inline ) ) {
+			if ( $inline === '' ) {
 				$inline = true;
 			} else {
 				$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
@@ -70,7 +70,7 @@ class Hooks implements
 	public static function renderNoMobileTag( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$inline = isset( $args['inline'] ) ? $args['inline'] : false;
 		if ( !is_bool( $inline ) ) {
-			if ( $args['inline'] === '' ) {
+			if ( $inline === '' ) {
 				$inline = true;
 			} else {
 				$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
