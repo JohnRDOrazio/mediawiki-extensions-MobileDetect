@@ -54,9 +54,9 @@ class Hooks implements
 			}
 		}
 		if ( $inline ) {
-			return '<span class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</span>';
+			return '<span class="mobileonly">' . $parser->recursiveTagParse( $input, $frame ) . '</span>';
 		} else {
-			return '<div class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</div>';
+			return '<div class="mobileonly">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
 		}
 	}
 
@@ -77,9 +77,9 @@ class Hooks implements
 			}
 		}
 		if ( $inline ) {
-			return '<span class="nomobile">' . $parser->recursiveTagParse( $input ) . '</span>';
+			return '<span class="nomobile">' . $parser->recursiveTagParse( $input, $frame ) . '</span>';
 		} else {
-			return '<div class="nomobile">' . $parser->recursiveTagParse( $input ) . '</div>';
+			return '<div class="nomobile">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
 		}
 	}
 
@@ -91,7 +91,11 @@ class Hooks implements
 	 */
 	public static function renderMobileOnly( Parser $parser, $input = '', $inline = false ) {
 		if ( !is_bool( $inline ) ) {
-			$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+			if ( $inline === 'inline' ) {
+				$inline = true;
+			} else {
+				$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+			}
 		}
 		if ( $inline ) {
 			return '<span class="mobileonly">' . $parser->recursiveTagParse( $input ) . '</span>';
@@ -108,7 +112,11 @@ class Hooks implements
 	 */
 	public static function renderNoMobile( Parser $parser, $input = '', $inline = false ) {
 		if ( !is_bool( $inline ) ) {
-			$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+			if ( $inline === 'inline' ) {
+				$inline = true;
+			} else {
+				$inline = filter_var( $inline, FILTER_VALIDATE_BOOLEAN );
+			}
 		}
 		if ( $inline ) {
 			return '<span class="nomobile">' . $parser->recursiveTagParse( $input ) . '</span>';
